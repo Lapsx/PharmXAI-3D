@@ -11,3 +11,10 @@ A generalizable Scientific Machine Learning (SciML) pipeline that ingests any re
 - **Physics Regularization:** Structural penalties injected into the Loss layer (Lennard-Jones atomic exclusions and covalent bond torsion strain via RDKit).
 - **Explainable AI (XAI):** GNNExplainer and Captum gradients mapped to an RGB scale (Red=Pharmacophore, Green=Substitution-allowed) on the 3D graph, rendered interactively via py3Dmol/Streamlit-3dmol.
 - **Validation:** Scaffold Split (Leave-One-Cluster-Out) to rigorously validate pharmacophore deduction on unseen chemical scaffolds based purely on protein pocket geometry.
+
+## Goals
+[] Data Pipeline (Data Ingestion): Build python script that reads the protein file and a ligand, cuts the protein receptor pocket (0.6nm cutoff) and converts it to an PyTorch Geometric HeteroData objetct.
+[] The GNN architecture: Build the geometric neural network itself. 
+[] Trainign loop and physics: Trains the model to predict binding affinity, adding physics based penalties (Lennard-Jones) in the Loss function so that the learned geometries are physical consistent.
+[] XAI layer: Apply GNNExplainer to label the molecule, revealing what parts consists of the pharmacophore itself and what parts can be modified, and render that in 3D.
+
