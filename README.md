@@ -22,4 +22,16 @@ PharmXAI-3D is an advanced Scientific Machine Learning (SciML) pipeline engineer
 ## Phase 4: Saliency Mapping & XAI 
 - **Input x Gradient Extraction:** Bypassed black-box evaluations by forcing gradients through the static spatial distances (`edge_attr.requires_grad = True`). 
 - **Pharmacophore Identification:** Computes the partial derivative $\frac{\partial (pK_d)}{\partial (Dist)}$, quantifying exactly how much the binding affinity shifts upon infinitesimal spatial perturbance of a specific atomic bond.
-- **Physical 3D Projection:** Filters the top 1% highest gradient magnitudes (the network's primary attention vectors) and projects them natively into an executable PyMOL rendering script (`.pml`), visualizing the exact steric clashes and hydrogen bonds driving the neural prediction.
+- **Continuous Gradient Rendering:** Replaced binary thresholds with a continuous mathematical mapping. Node saliency is bucketed into statistical percentiles (Top 1% Magenta, Top 5% Orange, etc.), rendering physical atoms as glowing volumetric spheres scaled by their electrostatic/steric sensitivity.
+- **Dependency Hardening (Web Viewer):** Abandoned PyMOL and Anaconda C++ shared library linkages (`libhdf5.so`) in favor of a standalone, web-based interactive HTML viewer powered by `3Dmol.js`.
+
+### XAI Modalities (Dual-Tool Execution)
+To answer distinct scientific questions, the XAI layer is bifurcated into two independent extraction tools:
+
+1. **`explain.py` (Pure Ligand Pharmacophore Extractor):**
+   - **Goal:** Lead Optimization and Virtual Screening.
+   - **Mechanism:** Isolates the mathematical gradient strictly to the ligand's topology. By completely filtering out the receptor's nodes, it highlights exactly which functional groups on the ligand are "untouchable" (Magenta) versus "modifiable scaffold" (Cyan).
+
+2. **`explain_complex.py` (Orthosteric Micro-environment Mapping):**
+   - **Goal:** Mechanistic Biology and Pocket Mapping.
+   - **Mechanism:** Evaluates the bipartite graph holistically. Unveils the receptor-ligand interaction vectors, revealing the exact receptor atoms (e.g., polarized carbonyls, H-bond donors) that mathematically lock the ligand into the orthosteric binding site.
