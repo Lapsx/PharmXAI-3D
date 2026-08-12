@@ -1,0 +1,24 @@
+# Python ignores
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Datasets and huge spatial files (Do NOT push to GitHub)
+raw/
+*.pt
+INDEX_*
+refined_ids.txt
+
+# Generated Visualization Outputs
+*.html
+
+# Environments
+.env
+.venv
+env/
+venv/
+
+# IDEs
+.vscode/
+.idea/
