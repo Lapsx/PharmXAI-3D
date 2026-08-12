@@ -35,3 +35,18 @@ To answer distinct scientific questions, the XAI layer is bifurcated into two in
 2. **`explain_complex.py` (Orthosteric Micro-environment Mapping):**
    - **Goal:** Mechanistic Biology and Pocket Mapping.
    - **Mechanism:** Evaluates the bipartite graph holistically. Unveils the receptor-ligand interaction vectors, revealing the exact receptor atoms (e.g., polarized carbonyls, H-bond donors) that mathematically lock the ligand into the orthosteric binding site.
+
+### CLI Usage (Command Line Interface)
+Both extraction tools are engineered as flexible CLI applications, allowing dynamic sub-system targeting on the fly. They feature interactive **Atom Hovering** (displaying Element, Residue, and Chain IDs dynamically).
+
+```bash
+# Execute with the default Dopamine D3 Receptor (3pbl)
+python3 explain.py
+
+# Inject a specific PDB ID dynamically (e.g., Serotonin 5-HT2B bound to Ergotamine)
+python3 explain.py 5tvn
+
+# Map the holistic complex (Receptor + Ligand) for a specific target
+python3 explain_complex.py 5tvn
+```
+*Note: The targeted PDB ID must exist within your local `raw/` directory and be registered in your refined dataset index.*
