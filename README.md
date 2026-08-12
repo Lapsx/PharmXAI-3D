@@ -28,7 +28,7 @@ PharmXAI-3D is still a work in progress, but the aim is to be an advanced Scient
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/YOUR-USERNAME/PharmXAI-3D.git
+git clone https://github.com/lapsx/PharmXAI-3D.git
 cd PharmXAI-3D
 ```
 
