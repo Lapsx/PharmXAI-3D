@@ -54,28 +54,28 @@ python3 train.py
 ### 2. Custom Inference & Virtual Screening (`predict_custom.py`)
 Run advanced inferences on arbitrary `.pdb` and `.sdf` files. The system automatically performs **Smina Docking** and **PINN Relaxation (Induced-Fit)** via `torch.autograd` to optimize spatial clashes before predicting the final affinity.
 
-**Comandos e Tags (Arguments):**
-- `-r` ou `--receptor`: Caminho para a estrutura do receptor `.pdb` (Obrigatório).
-- `-l` ou `--ligand`: Caminho para a estrutura da droga/ligante `.sdf` (Obrigatório).
-- `-n` ou `--native`: Caminho para o ligante de cristal nativo `.pdb`. Ativa o **Targeted Docking**, usando o nativo como bounding box.
-- `-c` ou `--compare`: Caminho para o ligante de cristal nativo `.pdb`. Ativa o **Blind Docking** (Varredura total) e compara o Centro de Massa da predição com o real, provando cientificamente o acerto.
-- `-t` ou `--true-affinity`: Permite injetar um valor numérico do pKd experimental real (ex: `-t 8.5`) para o programa calcular e plotar a margem de erro.
-- `--no-minimize`: Desativa o relaxamento físico autograd (Não recomendado).
-- `--no-explain`: Desativa a geração do Saliency Map / HTML.
+**Commands and Arguments (Tags):**
+- `-r` or `--receptor`: Path to the receptor `.pdb` structure (Required).
+- `-l` or `--ligand`: Path to the drug/ligand `.sdf` structure (Required).
+- `-n` or `--native`: Path to the native crystal ligand `.pdb`. Activates **Targeted Docking**, using the native ligand as a bounding box.
+- `-c` or `--compare`: Path to the native crystal ligand `.pdb`. Activates **Blind Docking** (Full scan) and compares the Center of Mass of the prediction with the true native structure, scientifically validating the docking pose.
+- `-t` or `--true-affinity`: Allows injecting a numerical value for the true experimental pKd (e.g., `-t 8.5`) to calculate and plot the absolute error margin.
+- `--no-minimize`: Disables PINN autograd physical relaxation (Not recommended).
+- `--no-explain`: Disables Saliency Map / HTML generation.
 
-**Exemplos de Uso:**
+**Usage Examples:**
 ```bash
-# Targeted Docking (Screening Rápido)
+# Targeted Docking (High-Throughput Screening)
 python3 predict_custom.py -r target.pdb -l drug.sdf -n native_crystal.pdb
 
-# Blind Docking com Validação Científica de Afinidade Real
+# Blind Docking with True Affinity Scientific Validation
 python3 predict_custom.py -r target.pdb -l drug.sdf -c native_crystal.pdb -t 8.5
 ```
 
-**Integração Web e PyMOL:**
-Para cada inferência, o script gera automaticamente **dois arquivos de visualização espacial**:
-1. `pharmacophore_...html`: Um visualizador 3D web interativo (standalone).
-2. `pharmacophore_...pml`: Um script macro executável do **PyMOL**. Para abri-lo profissionalmente no seu desktop, basta arrastar o arquivo `.pml` para a janela do PyMOL ou rodar `pymol arquivo.pml`. Ele carregará os complexos, as cores e as esferas do Saliency Map automaticamente.
+**Web and PyMOL Integration:**
+For each inference, the script automatically generates **two spatial visualization files**:
+1. `pharmacophore_...html`: An interactive standalone 3D web viewer.
+2. `pharmacophore_...pml`: An executable **PyMOL** macro script. To open it professionally on your desktop, simply drag and drop the `.pml` file into the PyMOL window or run `pymol script.pml`. It will automatically load the complexes, coloring schemes, and Saliency Map pseudoatoms.
 
 ### 3. XAI Extraction (Command Line Interface)
 Extract continuous mathematical mappings of structural sensitivity projected into an interactive standalone `3Dmol.js` Web Viewer.
