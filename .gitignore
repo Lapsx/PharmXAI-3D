@@ -22,3 +22,8 @@ venv/
 # IDEs
 .vscode/
 .idea/
+
+# Binários, Pesos do Modelo e Bibliotecas Locais (Evitar limite de 100MB do GitHub)
+*.pth
+smina
+mini_library_gpcr/

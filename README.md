@@ -51,8 +51,21 @@ python3 data_processor.py
 python3 train.py
 ```
 
-### 2. XAI Extraction (Command Line Interface)
-Both extraction tools are engineered as flexible CLI applications, featuring interactive **Atom Hovering** (displaying Element, Residue, and Chain IDs dynamically).
+### 2. Custom Inference & Virtual Screening (`predict_custom.py`)
+Run advanced inferences on arbitrary `.pdb` and `.sdf` files. The system automatically performs **Smina Docking** and **PINN Relaxation (Induced-Fit)** via `torch.autograd` to optimize spatial clashes before predicting the final affinity.
+
+**Targeted Docking (Mass Screening):** Uses a native crystal as a bounding box reference.
+```bash
+python3 predict_custom.py -r target.pdb -l drug.sdf -n native_crystal.pdb
+```
+
+**Blind Docking (Scientific Validation):** Scans the entire protein blindly, scores the geometry, and calculates the Center of Mass (COM) distance to the true native site. You can also provide the true experimental affinity (`-t`) to calculate the error margin.
+```bash
+python3 predict_custom.py -r target.pdb -l drug.sdf -c native_crystal.pdb -t 8.5
+```
+
+### 3. XAI Extraction (Command Line Interface)
+Extract continuous mathematical mappings of structural sensitivity projected into an interactive standalone `3Dmol.js` Web Viewer.
 
 ```bash
 # Pure Ligand Pharmacophore Extraction (Default: Dopamine D3 Receptor - 3pbl)
@@ -64,4 +77,9 @@ python3 explain.py 5tvn
 # Map the holistic complex (Receptor + Ligand) for a specific target
 python3 explain_complex.py 5tvn
 ```
-*Note: The targeted PDB ID must exist within your local `raw/` directory and be registered in your refined dataset index. The generated outputs will be saved as interactive `.html` files.*
+
+### 4. Build GPCR Mini-Library
+Download our automated validation set to test cross-reactivity across Dopamine, Adenosine, and Opioid receptors (Delta, Kappa, Mu) directly from RCSB and PubChem:
+```bash
+python3 build_mini_library.py
+```

@@ -76,8 +76,16 @@ class PharmGraphBuilder:
         # Filtrar o bolso (Pocket) usando KDTree
         tree_prot = KDTree(prot_pos)
         pocket_indices = tree_prot.query_ball_point(lig_pos, r=self.pocket_radius)
-        pocket_indices = np.unique([idx for sublist in pocket_indices for idx in sublist])
+        pocket_indices = np.unique([idx for sublist in pocket_indices for idx in sublist]).astype(int)
         
+        if len(pocket_indices) == 0:
+            raise ValueError(
+                "Nenhum átomo da proteína foi encontrado próximo ao ligante! "
+                "Isso significa que as coordenadas do ligante (.sdf) estão fora do bolso do receptor. "
+                "Você precisa realizar o Docking Molecular (Ex: AutoDock Vina) ou Alinhamento 3D "
+                "para posicionar o fármaco dentro da proteína antes de prever a afinidade."
+            )
+            
         pocket_pos = prot_pos[pocket_indices]
         pocket_feat = prot_feat[pocket_indices]
 

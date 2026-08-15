@@ -99,7 +99,11 @@ class PharmGeometricGNN(nn.Module):
         )
 
     def forward(self, data_homo):
-        x, edge_index, edge_attr, batch = data_homo.x, data_homo.edge_index, data_homo.edge_attr, data_homo.batch
+        x, edge_index, pos, batch = data_homo.x, data_homo.edge_index, data_homo.pos, data_homo.batch
+        
+        # Computação Dinâmica Diferenciável da Distância Euclidiana (Crucial para Autograd)
+        row, col = edge_index
+        edge_attr = torch.norm(pos[row] - pos[col], p=2, dim=1).view(-1, 1)
         
         # 1. Encoding Inicial Hibrido (Embedding Categórico + Features Químicas)
         x = self.node_encoder(x)
