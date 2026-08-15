@@ -121,7 +121,13 @@ def predict_affinity(receptor_path, ligand_path, native_path=None, compare_path=
             loss = -pkd_pred.sum() + 0.5 * steric_pred.sum()
             loss.backward()
             optimizer_pinn.step()
+        
         data_homo.pos.requires_grad_(False)
+        
+        # Sincronizar as distâncias (edge_attr) com as novas posições otimizadas
+        row, col = data_homo.edge_index
+        data_homo.edge_attr = torch.norm(data_homo.pos[row] - data_homo.pos[col], p=2, dim=1).view(-1, 1).detach()
+        
         model.eval()
         print("[+] Induced-fit resolvido pela rede neural!")
 
