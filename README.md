@@ -54,15 +54,28 @@ python3 train.py
 ### 2. Custom Inference & Virtual Screening (`predict_custom.py`)
 Run advanced inferences on arbitrary `.pdb` and `.sdf` files. The system automatically performs **Smina Docking** and **PINN Relaxation (Induced-Fit)** via `torch.autograd` to optimize spatial clashes before predicting the final affinity.
 
-**Targeted Docking (Mass Screening):** Uses a native crystal as a bounding box reference.
-```bash
-python3 predict_custom.py -r target.pdb -l drug.sdf -n native_crystal.pdb
-```
+**Comandos e Tags (Arguments):**
+- `-r` ou `--receptor`: Caminho para a estrutura do receptor `.pdb` (Obrigatório).
+- `-l` ou `--ligand`: Caminho para a estrutura da droga/ligante `.sdf` (Obrigatório).
+- `-n` ou `--native`: Caminho para o ligante de cristal nativo `.pdb`. Ativa o **Targeted Docking**, usando o nativo como bounding box.
+- `-c` ou `--compare`: Caminho para o ligante de cristal nativo `.pdb`. Ativa o **Blind Docking** (Varredura total) e compara o Centro de Massa da predição com o real, provando cientificamente o acerto.
+- `-t` ou `--true-affinity`: Permite injetar um valor numérico do pKd experimental real (ex: `-t 8.5`) para o programa calcular e plotar a margem de erro.
+- `--no-minimize`: Desativa o relaxamento físico autograd (Não recomendado).
+- `--no-explain`: Desativa a geração do Saliency Map / HTML.
 
-**Blind Docking (Scientific Validation):** Scans the entire protein blindly, scores the geometry, and calculates the Center of Mass (COM) distance to the true native site. You can also provide the true experimental affinity (`-t`) to calculate the error margin.
+**Exemplos de Uso:**
 ```bash
+# Targeted Docking (Screening Rápido)
+python3 predict_custom.py -r target.pdb -l drug.sdf -n native_crystal.pdb
+
+# Blind Docking com Validação Científica de Afinidade Real
 python3 predict_custom.py -r target.pdb -l drug.sdf -c native_crystal.pdb -t 8.5
 ```
+
+**Integração Web e PyMOL:**
+Para cada inferência, o script gera automaticamente **dois arquivos de visualização espacial**:
+1. `pharmacophore_...html`: Um visualizador 3D web interativo (standalone).
+2. `pharmacophore_...pml`: Um script macro executável do **PyMOL**. Para abri-lo profissionalmente no seu desktop, basta arrastar o arquivo `.pml` para a janela do PyMOL ou rodar `pymol arquivo.pml`. Ele carregará os complexos, as cores e as esferas do Saliency Map automaticamente.
 
 ### 3. XAI Extraction (Command Line Interface)
 Extract continuous mathematical mappings of structural sensitivity projected into an interactive standalone `3Dmol.js` Web Viewer.

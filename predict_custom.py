@@ -261,6 +261,41 @@ def predict_affinity(receptor_path, ligand_path, native_path=None, compare_path=
 </html>
 ''')
         print(f"[SUCESSO] Viewer HTML salvo: {html_filename}")
+        
+        # ==========================================
+        # Geração de Script PyMOL (.pml)
+        # ==========================================
+        pml_filename = html_filename.replace('.html', '.pml')
+        with open(pml_filename, "w", encoding="utf-8") as f:
+            f.write(f"load {os.path.basename(receptor_path)}, receptor\n")
+            f.write(f"load {os.path.basename(work_ligand)}, ligand\n")
+            f.write("color gray70, receptor\n")
+            f.write("show cartoon, receptor\n")
+            f.write("color cyan, ligand\n")
+            f.write("show sticks, ligand\n")
+            
+            # Adicionando Esferas Farmacofóricas como pseudoatoms
+            for i, val in enumerate(node_importance):
+                if val < p70: continue
+                color, radius, alpha = ('green', 0.2, 0.6) if val < p85 else ('yellow', 0.3, 0.4) if val < p95 else ('orange', 0.4, 0.3) if val < p99 else ('magenta', 0.5, 0.2)
+                p = pos[i]
+                f.write(f"pseudoatom pharm_{i}, pos=[{p[0]:.3f}, {p[1]:.3f}, {p[2]:.3f}], color={color}, vdw={radius}\n")
+                f.write(f"show spheres, pharm_{i}\n")
+                f.write(f"set sphere_transparency, {alpha}, pharm_{i}\n")
+                
+            # Adicionando Conexões Críticas (Edges)
+            for idx in critical_edges_idx:
+                p1, p2 = pos[edge_index[0, idx]], pos[edge_index[1, idx]]
+                f.write(f"pseudoatom edgeA_{idx}, pos=[{p1[0]:.3f}, {p1[1]:.3f}, {p1[2]:.3f}]\n")
+                f.write(f"pseudoatom edgeB_{idx}, pos=[{p2[0]:.3f}, {p2[1]:.3f}, {p2[2]:.3f}]\n")
+                f.write(f"distance dist_{idx}, edgeA_{idx}, edgeB_{idx}\n")
+                f.write(f"color magenta, dist_{idx}\n")
+                f.write(f"hide labels, dist_{idx}\n")
+                
+            f.write("center ligand\n")
+            f.write("zoom ligand, 10\n")
+            
+        print(f"[SUCESSO] Script PyMOL salvo: {pml_filename}")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="PharmXAI-3D: Predição e Explicação Customizada.")
